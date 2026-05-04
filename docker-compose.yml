@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: smartpark-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: smartpark-mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://mongodb:27017/
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: smartpark-gateway
+    ports:
+      - "5000:5000"
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:5001
+      - PARKING_SERVICE_URL=http://parking-service:5002
+      - TRAFFIC_SERVICE_URL=http://traffic-service:5003
+      - NOTIF_SERVICE_URL=http://notification-service:5004
+      - JWT_SECRET=smartpark_jwt_secret_2024
+      - FRONTEND_URL=http://localhost:3000
+    depends_on: [auth-service, parking-service, traffic-service, notification-service]
+
+  auth-service:
+    build: ./services/auth-service
+    container_name: smartpark-auth
+    ports:
+      - "5001:5001"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/smart_traffic_parking
+      - JWT_SECRET=smartpark_jwt_secret_2024
+      - AUTH_SERVICE_PORT=5001
+    depends_on: [mongodb]
+
+  parking-service:
+    build: ./services/parking-service
+    container_name: smartpark-parking
+    ports:
+      - "5002:5002"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/smart_traffic_parking
+      - PARKING_SERVICE_PORT=5002
+      - NOTIF_SERVICE_URL=http://notification-service:5004
+    depends_on: [mongodb, notification-service]
+
+  traffic-service:
+    build: ./services/traffic-service
+    container_name: smartpark-traffic
+    ports:
+      - "5003:5003"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/smart_traffic_parking
+      - TRAFFIC_SERVICE_PORT=5003
+    depends_on: [mongodb]
+
+  notification-service:
+    build: ./services/notification-service
+    container_name: smartpark-notification
+    ports:
+      - "5004:5004"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/smart_traffic_parking
+      - NOTIFICATION_SERVICE_PORT=5004
+    depends_on: [mongodb]
+
+  frontend:
+    build: ./frontend
+    container_name: smartpark-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_TRAFFIC_WS=http://localhost:5003
+      - REACT_APP_NOTIF_WS=http://localhost:5004
+    depends_on: [api-gateway]
+
+volumes:
+  mongo_data:

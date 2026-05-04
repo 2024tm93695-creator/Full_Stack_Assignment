@@ -1,0 +1,215 @@
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  height: 64px;
+}
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.logo-text {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 24px;
+  flex: 1;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.notif-btn {
+  position: relative;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.notif-btn:hover { background: rgba(255,255,255,0.25); }
+
+.notif-badge {
+  position: absolute;
+  top: -2px; right: -2px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.user-menu { position: relative; }
+
+.user-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  padding: 6px 12px 6px 6px;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.user-btn:hover { background: rgba(255,255,255,0.25); }
+
+.avatar {
+  width: 28px; height: 28px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.user-name { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #fff;
+  color: var(--text);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  min-width: 200px;
+  overflow: hidden;
+  animation: fadeDown 0.15s ease;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-user {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdown-user strong { font-size: 14px; }
+.dropdown-user small  { font-size: 12px; color: var(--text-light); }
+
+.dropdown hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.15s;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-item:hover { background: var(--bg); }
+.dropdown-item.danger { color: var(--danger); }
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 6px;
+}
+
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+    position: fixed;
+    top: 64px; left: 0; right: 0;
+    background: var(--primary);
+    flex-direction: column;
+    padding: 12px;
+    gap: 4px;
+  }
+  .nav.nav-open { display: flex; }
+  .nav-link { width: 100%; padding: 12px 16px; }
+  .hamburger { display: block; }
+  .user-name { display: none; }
+}

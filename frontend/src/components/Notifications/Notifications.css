@@ -1,0 +1,99 @@
+.notif-panel {
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  width: 360px;
+  max-height: 480px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  animation: slideDown 0.2s ease;
+  overflow: hidden;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.notif-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.mark-all-btn {
+  font-size: 11px;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.notif-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-light);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.notif-close-btn:hover { background: var(--bg); }
+
+.notif-scroll {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.notif-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+  position: relative;
+}
+
+.notif-row:hover { background: var(--bg); }
+.notif-row.unread { background: #f0f7ff; }
+
+.notif-type-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+
+.notif-content strong { font-size: 13px; display: block; margin-bottom: 2px; }
+.notif-content p      { font-size: 12px; color: var(--text-light); margin: 0 0 3px; line-height: 1.4; }
+.notif-content small  { font-size: 10px; color: #bbb; }
+
+.unread-dot {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.notif-empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-light);
+}
+
+.notif-empty span { font-size: 32px; display: block; margin-bottom: 8px; }
+.notif-empty p    { font-size: 13px; }
+
+@media (max-width: 400px) {
+  .notif-panel { width: calc(100vw - 16px); right: 8px; }
+}

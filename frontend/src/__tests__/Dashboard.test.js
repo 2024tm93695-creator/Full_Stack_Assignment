@@ -51,7 +51,8 @@ describe('Dashboard', () => {
       expect(screen.getByText(/available slots/i)).toBeInTheDocument();
       expect(screen.getByText(/parking locations/i)).toBeInTheDocument();
       expect(screen.getByText(/avg congestion/i)).toBeInTheDocument();
-      expect(screen.getByText(/my bookings/i)).toBeInTheDocument();
+      // "My Bookings" appears in both the stat label and the quick-actions link
+      expect(screen.getAllByText(/my bookings/i)[0]).toBeInTheDocument();
     });
   });
 

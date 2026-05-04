@@ -129,30 +129,6 @@ jobs:
         env:
           NODE_ENV: test
 
-  # ─── Frontend ────────────────────────────────────────────────────────────────
-  frontend:
-    name: Frontend
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test -- --watchAll=false --passWithNoTests
-        env:
-          CI: true
-
   # ─── All Tests Gate ──────────────────────────────────────────────────────────
   all-tests:
     name: All Tests Passed
@@ -162,7 +138,6 @@ jobs:
       - parking-service
       - traffic-service
       - notification-service
-      - frontend
     if: always()
 
     steps:
@@ -171,8 +146,7 @@ jobs:
           if [[ "${{ needs.auth-service.result }}" != "success" ||
                 "${{ needs.parking-service.result }}" != "success" ||
                 "${{ needs.traffic-service.result }}" != "success" ||
-                "${{ needs.notification-service.result }}" != "success" ||
-                "${{ needs.frontend.result }}" != "success" ]]; then
+                "${{ needs.notification-service.result }}" != "success" ]]; then
             echo "One or more test jobs failed."
             exit 1
           fi

@@ -1,0 +1,179 @@
+name: Test Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ─── Auth Service ────────────────────────────────────────────────────────────
+  auth-service:
+    name: Auth Service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/auth-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Cache MongoDB binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binary-${{ runner.os }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+        env:
+          JWT_SECRET: test_jwt_secret
+          NODE_ENV: test
+
+  # ─── Parking Service ─────────────────────────────────────────────────────────
+  parking-service:
+    name: Parking Service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/parking-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Cache MongoDB binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binary-${{ runner.os }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+        env:
+          JWT_SECRET: test_jwt_secret
+          NODE_ENV: test
+
+  # ─── Traffic Service ─────────────────────────────────────────────────────────
+  traffic-service:
+    name: Traffic Service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/traffic-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Cache MongoDB binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binary-${{ runner.os }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+        env:
+          NODE_ENV: test
+
+  # ─── Notification Service ────────────────────────────────────────────────────
+  notification-service:
+    name: Notification Service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/notification-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Cache MongoDB binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binary-${{ runner.os }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+        env:
+          NODE_ENV: test
+
+  # ─── Frontend ────────────────────────────────────────────────────────────────
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test -- --watchAll=false --passWithNoTests
+        env:
+          CI: true
+
+  # ─── All Tests Gate ──────────────────────────────────────────────────────────
+  all-tests:
+    name: All Tests Passed
+    runs-on: ubuntu-latest
+    needs:
+      - auth-service
+      - parking-service
+      - traffic-service
+      - notification-service
+      - frontend
+    if: always()
+
+    steps:
+      - name: Check all jobs
+        run: |
+          if [[ "${{ needs.auth-service.result }}" != "success" ||
+                "${{ needs.parking-service.result }}" != "success" ||
+                "${{ needs.traffic-service.result }}" != "success" ||
+                "${{ needs.notification-service.result }}" != "success" ||
+                "${{ needs.frontend.result }}" != "success" ]]; then
+            echo "One or more test jobs failed."
+            exit 1
+          fi
+          echo "All tests passed."

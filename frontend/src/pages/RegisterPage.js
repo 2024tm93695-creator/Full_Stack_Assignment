@@ -50,7 +50,7 @@ const RegisterPage = () => {
           <div className="grid-2">
             <div className="form-group">
               <label>Full Name *</label>
-              <input type="text" placeholder="John Doe" {...f('name')} required />
+              <input type="text" placeholder="Your name" {...f('name')} required />
             </div>
             <div className="form-group">
               <label>Email Address *</label>
@@ -58,7 +58,7 @@ const RegisterPage = () => {
             </div>
             <div className="form-group">
               <label>Password *</label>
-              <input type="password" placeholder="Min. 6 characters" {...f('password')} required />
+              <input type="password" placeholder="Choose a password" {...f('password')} required />
             </div>
             <div className="form-group">
               <label>Phone Number</label>

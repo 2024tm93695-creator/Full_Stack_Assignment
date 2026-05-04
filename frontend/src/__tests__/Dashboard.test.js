@@ -62,18 +62,22 @@ describe('Dashboard', () => {
 
   test('renders congestion levels from traffic data', async () => {
     renderDashboard();
+    // getAllByText used because each level appears in both the summary label
+    // and (for heavy) the alert badge — getByText would throw on >1 match
     await waitFor(() => {
-      expect(screen.getByText(/heavy/i)).toBeInTheDocument();
-      expect(screen.getByText(/moderate/i)).toBeInTheDocument();
-      expect(screen.getByText(/free/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/heavy/i)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(/moderate/i)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(/free/i)[0]).toBeInTheDocument();
     });
   });
 
   test('renders find parking and my bookings buttons', async () => {
     renderDashboard();
+    // getAllByText used because each phrase appears in multiple elements
+    // (quick-actions link + empty-state link / quick-actions link + stat label)
     await waitFor(() => {
-      expect(screen.getByText(/find parking/i)).toBeInTheDocument();
-      expect(screen.getByText(/my bookings/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/find parking/i)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(/my bookings/i)[0]).toBeInTheDocument();
     });
   });
 

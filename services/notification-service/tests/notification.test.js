@@ -63,7 +63,9 @@ describe('POST /api/notifications', () => {
 describe('GET /api/notifications', () => {
   beforeEach(async () => {
     await createNotif(USER_ID);
-    await createNotif(USER_ID, { title: 'Second Alert', isRead: true });
+    // create second notif then explicitly mark it read so unreadCount = 1
+    const { body: second } = await createNotif(USER_ID, { title: 'Second Alert' });
+    await request(app).put(`/api/notifications/${second._id}/read`);
     await createNotif(USER_ID2);     // different user
   });
 

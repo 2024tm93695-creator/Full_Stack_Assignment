@@ -1,16 +1,18 @@
 const request = require('supertest');
 const express = require('express');
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { MongoMemoryReplSet } = require('mongodb-memory-server');
 jest.mock('axios');                              // prevent real HTTP to notif service
 const axios = require('axios');
 axios.post.mockResolvedValue({ data: {} });
+
+jest.setTimeout(60000); // replica set init can take >5 s
 
 const bookingRoutes = require('../src/routes/booking');
 const parkingRoutes = require('../src/routes/parking');
 const ParkingSlot   = require('../src/models/ParkingSlot');
 
-let mongod;
+let replSet;
 const app = express();
 app.use(express.json());
 app.use('/api/parking/slots',    parkingRoutes);
@@ -31,13 +33,13 @@ const startTime = new Date(Date.now() + 3600000).toISOString();
 const endTime   = new Date(Date.now() + 7200000).toISOString();
 
 beforeAll(async () => {
-  mongod = await MongoMemoryServer.create();
-  await mongoose.connect(mongod.getUri());
+  replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
+  await mongoose.connect(replSet.getUri());
 });
 
 afterAll(async () => {
   await mongoose.disconnect();
-  await mongod.stop();
+  await replSet.stop();
 });
 
 afterEach(async () => {
